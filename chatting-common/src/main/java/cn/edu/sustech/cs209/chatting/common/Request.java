@@ -2,21 +2,27 @@ package cn.edu.sustech.cs209.chatting.common;
 
 import java.io.Serializable;
 
+/**
+ * Client向Server发送的Request类.
+ *
+ * @param <T> 消息体的类型
+ */
 public class Request<T> implements Serializable {
+
   private String command;
   private T body;
 
-  public Request(String command){
+  public Request(String command) {
     this.command = command;
     body = null;
   }
 
-  public Request(String command, T body){
+  public Request(String command, T body) {
     this.command = command;
     this.body = body;
   }
 
-  public Request(){
+  public Request() {
 
   }
 

@@ -3,8 +3,11 @@ package cn.edu.sustech.cs209.chatting.client;
 import cn.edu.sustech.cs209.chatting.common.Message;
 import java.util.List;
 
-
+/**
+ * Chat类.
+ */
 public class Chat {
+
   private String index;
   private List<Message> messages;
   private boolean isRead;
@@ -15,7 +18,8 @@ public class Chat {
     this.isRead = isRead;
   }
 
-  public Chat(){}
+  public Chat() {
+  }
 
   public String getIndex() {
     return index;

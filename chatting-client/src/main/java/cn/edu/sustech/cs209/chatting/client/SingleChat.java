@@ -3,7 +3,11 @@ package cn.edu.sustech.cs209.chatting.client;
 import cn.edu.sustech.cs209.chatting.common.Message;
 import java.util.List;
 
-public class SingleChat extends Chat{
+/**
+ * 单人聊天类，继承了Chat类.
+ */
+public class SingleChat extends Chat {
+
   private String name;
 
   public SingleChat(String name,

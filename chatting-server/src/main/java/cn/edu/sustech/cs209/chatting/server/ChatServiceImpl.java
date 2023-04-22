@@ -13,7 +13,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatServiceImpl implements ChaService{
+/**
+ * 聊天服务的实现类.
+ */
+public class ChatServiceImpl implements ChaService {
+
   private boolean isClientOn;
   private String user;
 
@@ -27,22 +31,24 @@ public class ChatServiceImpl implements ChaService{
     isClientOn = true;
   }
 
+  @Override
   public void loginCheck(String username) throws IOException {
     Response<Boolean> response = new Response<>("LOGIN RETURN");
     if (Main.sessions.containsKey(username)) {
       response.setBody(false);
       out.writeObject(response);
-      System.out.println(username+"已注册");
+      System.out.println(username + "已注册");
     } else {
       response.setBody(true);
       out.writeObject(response);
       this.user = username;
       Main.sessions.put(username, this);
-      System.out.println(username+"成功登录");
+      System.out.println(username + "成功登录");
     }
     out.flush();
   }
 
+  @Override
   public void getOnlineList() throws IOException {
     ArrayList<String> list = new ArrayList<>(Main.sessions.keySet());
     Response<ArrayList<String>> response = new Response<>("LIST RETURN");
@@ -51,24 +57,24 @@ public class ChatServiceImpl implements ChaService{
     out.flush();
   }
 
-  // 单播发送
+  @Override
   public void unicastMessage(Message message) throws IOException {
     Response<Message> response = new Response<>("SINGLE RETURN");
     response.setBody(message);
     String sendTo = message.getSendTo();
-    if(Main.sessions.containsKey(sendTo)) { // 对方还在线
+    if (Main.sessions.containsKey(sendTo)) { // 对方还在线
       ObjectOutputStream toStream = Main.sessions.get(sendTo).out;
       toStream.writeObject(response);
       toStream.flush();
     }
   }
 
-  // 多播发送
+  @Override
   public void multicast(Message message) throws IOException {
     GroupMessage groupMessage = (GroupMessage) message;
     List<String> members = groupMessage.getMembers();
-    for(String member : members){ // 对所有接收方发送
-      if(!member.equals(message.getSentBy()) && Main.sessions.containsKey(member)) { // 对方不是自己而且还在线
+    for (String member : members) { // 对所有接收方发送
+      if (!member.equals(message.getSentBy()) && Main.sessions.containsKey(member)) { // 对方不是自己而且还在线
         Response<GroupMessage> response = new Response<>("GROUP RETURN");
         response.setBody(groupMessage);
         ObjectOutputStream toStream = Main.sessions.get(member).out;
@@ -78,17 +84,23 @@ public class ChatServiceImpl implements ChaService{
     }
   }
 
-  public void serveDispatch() throws IOException, ClassNotFoundException{
+  /**
+   * 服务分发.
+   *
+   * @throws IOException            IO异常
+   * @throws ClassNotFoundException 类不存在异常
+   */
+  public void serveDispatch() throws IOException, ClassNotFoundException {
     out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
     in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-    while(true){
+    while (true) {
       Request<?> request = (Request<?>) in.readObject();
       System.out.println("COMMEND: " + request.getCommand());
-      if(request.getCommand().equals("LOGIN")){
+      if (request.getCommand().equals("LOGIN")) {
         loginCheck((String) request.getBody());
-      } else if(request.getCommand().equals("LIST")){
+      } else if (request.getCommand().equals("LIST")) {
         getOnlineList();
-      } else if(request.getCommand().equals("SINGLE SEND")){
+      } else if (request.getCommand().equals("SINGLE SEND")) {
         unicastMessage((Message) request.getBody());
       } else if (request.getCommand().equals("GROUP SEND")) {
         multicast((Message) request.getBody());
@@ -96,6 +108,11 @@ public class ChatServiceImpl implements ChaService{
     }
   }
 
+  /**
+   * 得到服务对象的名字.
+   *
+   * @return String
+   */
   public String getUser() {
     return user;
   }

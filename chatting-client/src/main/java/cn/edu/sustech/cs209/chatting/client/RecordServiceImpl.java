@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+/**
+ * 消息服务的实现类.
+ */
 public class RecordServiceImpl implements RecordService {
+
   private Map<String, SingleChat> singleChatRecords;
   private Map<String, GroupChat> groupChatRecords;
 
-  public RecordServiceImpl(){
+  public RecordServiceImpl() {
     singleChatRecords = new HashMap<>();
     groupChatRecords = new HashMap<>();
   }
@@ -28,40 +31,45 @@ public class RecordServiceImpl implements RecordService {
 
   @Override
   public void addMessage(String index, Message message) {
-    if(isSingleChat(index))
+    if (isSingleChat(index)) {
       singleChatRecords.get(index).getMessages().add(message);
-    else
+    } else {
       groupChatRecords.get(index).getMessages().add(message);
+    }
   }
 
   @Override
   public List<Message> getMessages(String index) {
-    if(isSingleChat(index))
+    if (isSingleChat(index)) {
       return singleChatRecords.get(index).getMessages();
+    }
     return groupChatRecords.get(index).getMessages();
   }
 
   @Override
   public boolean isRead(String index) {
-    if(isSingleChat(index))
+    if (isSingleChat(index)) {
       return singleChatRecords.get(index).isRead();
+    }
     return groupChatRecords.get(index).isRead();
   }
 
   @Override
   public void changeToRead(String index) {
-    if(isSingleChat(index))
+    if (isSingleChat(index)) {
       singleChatRecords.get(index).setRead(true);
-    else
+    } else {
       groupChatRecords.get(index).setRead(true);
+    }
   }
 
   @Override
   public void changeToUnRead(String index) {
-    if(isSingleChat(index))
+    if (isSingleChat(index)) {
       singleChatRecords.get(index).setRead(false);
-    else
+    } else {
       groupChatRecords.get(index).setRead(false);
+    }
   }
 
   @Override

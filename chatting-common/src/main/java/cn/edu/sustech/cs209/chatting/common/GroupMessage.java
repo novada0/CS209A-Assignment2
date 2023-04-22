@@ -2,11 +2,16 @@ package cn.edu.sustech.cs209.chatting.common;
 
 import java.util.List;
 
-public class GroupMessage extends Message{
+/**
+ * 群聊消息类.
+ */
+public class GroupMessage extends Message {
+
   private String group;
   private List<String> members;
 
-  public GroupMessage(Long timestamp, String sentBy, String sendTo, String data, String group, List<String> members,
+  public GroupMessage(Long timestamp, String sentBy, String sendTo, String data, String group,
+      List<String> members,
       String fileName, byte[] fileBytes) {
     super(timestamp, sentBy, sendTo, data, fileName, fileBytes);
     this.group = group;
